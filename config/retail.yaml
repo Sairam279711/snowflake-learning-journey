@@ -1,0 +1,57 @@
+industry: retail
+database: RETAIL_DB
+labels: {customer: Customer, product: Product, location: Store, transaction: Order, amount: Sale amount}
+
+tables:
+  customers:
+    primary_key: customer_id
+    rows: 5000
+    columns:
+      customer_id: {type: VARCHAR, fake: uuid4}
+      full_name:   {type: VARCHAR, fake: name}
+      city:        {type: VARCHAR, fake: city}
+      signup_date: {type: DATE, fake: date_this_decade}
+    dq_rules:
+      - {rule: not_null, column: customer_id}
+      - {rule: unique, column: customer_id}
+
+  products:
+    primary_key: product_id
+    rows: 200
+    columns:
+      product_id:   {type: VARCHAR, fake: uuid4}
+      product_name: {type: VARCHAR, fake: word}
+      category:     {type: VARCHAR, choices: [Electronics, Clothing, Grocery, Home, Toys]}
+      price:        {type: 'NUMBER(10,2)', min: 2, max: 300}
+    dq_rules:
+      - {rule: not_null, column: product_id}
+      - {rule: unique, column: product_id}
+
+  stores:
+    primary_key: store_id
+    rows: 25
+    columns:
+      store_id:   {type: VARCHAR, fake: uuid4}
+      store_name: {type: VARCHAR, fake: company}
+      city:       {type: VARCHAR, fake: city}
+    dq_rules:
+      - {rule: not_null, column: store_id}
+      - {rule: unique, column: store_id}
+
+  transactions:
+    primary_key: transaction_id
+    rows: 50000
+    columns:
+      transaction_id:   {type: VARCHAR, fake: uuid4}
+      customer_id:      {type: VARCHAR, ref: customers.customer_id}
+      product_id:       {type: VARCHAR, ref: products.product_id}
+      store_id:         {type: VARCHAR, ref: stores.store_id}
+      transaction_date: {type: DATE, fake: date_this_year}
+      amount:           {type: 'NUMBER(12,2)', min: 5, max: 500}
+      status:           {type: VARCHAR, choices: [COMPLETED, RETURNED, CANCELLED]}      payment_method:   {type: VARCHAR, choices: [CARD, CASH, MOBILE]}
+    dq_rules:
+      - {rule: not_null, column: transaction_id}
+      - {rule: unique, column: transaction_id}
+      - {rule: accepted_values, column: status, values: [COMPLETED, RETURNED, CANCELLED]}
+      - {rule: range, column: amount, min: 0, max: 10000}
+      - {rule: foreign_key, column: customer_id, ref: customers.customer_id}
