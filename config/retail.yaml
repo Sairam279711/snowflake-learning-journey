@@ -48,7 +48,8 @@ tables:
       store_id:         {type: VARCHAR, ref: stores.store_id}
       transaction_date: {type: DATE, fake: date_this_year}
       amount:           {type: 'NUMBER(12,2)', min: 5, max: 500}
-      status:           {type: VARCHAR, choices: [COMPLETED, RETURNED, CANCELLED]}      payment_method:   {type: VARCHAR, choices: [CARD, CASH, MOBILE]}
+      status:           {type: VARCHAR, choices: [COMPLETED, RETURNED, CANCELLED]}
+      payment_method:   {type: VARCHAR, choices: [CARD, CASH, MOBILE]}
     dq_rules:
       - {rule: not_null, column: transaction_id}
       - {rule: unique, column: transaction_id}
